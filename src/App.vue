@@ -276,6 +276,7 @@ export default {
   },
   created: function () {
     if ("serviceWorker" in navigator) {
+      console.log("service worker is present")
       navigator.serviceWorker.register("service-worker.js")
     }
   },
