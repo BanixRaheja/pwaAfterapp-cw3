@@ -1,48 +1,54 @@
 var cacheName = "afterschool-v1";
 var cacheFiles = [
     "index.html",
+    "Images/badminton.png",
+    "Images/dance.png",
+    "Images/drama1.png",
+    "Images/drawing1.jpg",
+    "Images/english1.png",
+    "Images/football.png",
+    "Images/gymnastic.png",
+    "Images/icon-32.png",
+    "Images/icon-512.png",
+    "Images/karate.png",
+    "Images/math1.jpeg",
+    "Images/music.jpg",
+    "Images/science1.png",
+    "Images/social1.gif",
+    "javascript/app.js",
+    "lessons.js"
 ];
 
-// Install event
-self.addEventListener('install', function(e) {
+self.addEventListener("install", function(e) {
     console.log("[Service Worker] Install");
     e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
+        caches.open(cacheName). then(function(cache) {
             console.log("[Service Worker] Caching files");
-            return cache.addAll(cacheFiles)
-            .catch(function(error) {
-                console.error('Failed to cache files:', error);
-            });
+            return cache.addAll(cacheFiles);
         })
     );
 });
 
-// Activate event
-self.addEventListener('activate', function(event) {
-    console.log('Service worker activated');
-});
+self.addEventListener("fetch", function (e){
+    e.respondWith(
+        caches.match(e.request).then(function (cachedFile) {
+            // if the file is in cache, retrive it from there
+            if(cachedFile){
+                console.log("[Service Worker] Resource fetched from the cache for: " + e.request.url);
+                return cachedFile;
+            } else //if the file is not in the cache, download the file
+            {
+                return fetch(e.request).then(function (response) {
+                    return caches.open(cacheName).then(function (cache) {
+                        //add new file to the cache
+                        cache.put(e.request, response.clone());
 
-// Fetch event
-self.addEventListener('fetch', function(event) {
-    if (event.request.url.startsWith('https://') 
-    && !event.request.url.includes('/api/')) {
-        event.respondWith(
-            caches.match(event.request).then(function(cachedResponse) {
-                if (cachedResponse) {
-                    console.log("[Service Worker] Resource fetched from the cache for: " + event.request.url);
-                    return cachedResponse;
-                } else {
-                    return fetch(event.request).then(function(response) {
-                        // Clone the response before caching
-                        var responseToCache = response.clone();
-                        caches.open(cacheName).then(function(cache) {
-                            cache.put(event.request, responseToCache);
-                            console.log("[Service Worker] Resource fetched and saved in the cache for: " + event.request.url);
-                        });
+                        console.log("[Service Worker] Resource fetched and saved in the cache for: " +
+                        e.request.url);
                         return response;
                     });
-                }
-            })
-        );
-    } 
+                });
+            }
+        })
+    );
 });
