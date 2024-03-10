@@ -1,10 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-new Vue({
-  render: (h) => h(App)
-}).$mount('#app')
-
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker.js')
@@ -15,3 +11,7 @@ if ('serviceWorker' in navigator) {
       console.error('Service Worker registration failed:', error);
     });
 }
+
+new Vue({
+  render: (h) => h(App)
+}).$mount('#app')

@@ -1,6 +1,6 @@
 var cacheName = "afterschool-v1";
 var cacheFiles = [
-    "./index.html",
+    "index.html",
 ];
 
 self.addEventListener("install", function(e) {
