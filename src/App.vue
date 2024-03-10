@@ -1,6 +1,34 @@
 <template>
   <div id="app">
-    <Header :siteName="siteName" :siteLogo = "siteLogo" :cartLength="cart.length" @change="toggleCartDisplay"></Header>
+    <Header :siteName="siteName" :siteLogo="siteLogo" :cartLength="cart.length" @change="toggleCartDisplay"></Header>
+    
+    <main class="mt-4">
+      <div v-if="!isCartDisplaying" id="lessons" class="responsive-container">
+        <div class="search-container">
+          <input type="text" id="search" placeholder="Search lessons..." v-model="searchText" />
+        </div>
+        <div class="filter-container">
+          <p class="filter-heading">Filter by:</p>
+          <div class="filter-options">
+            <div v-for="(sortOption, index) in sortOptions" :key="index" class="filter-option">
+              <input type="radio" name="filter" v-model="sortBy" :value="sortOption" :id="sortOption" />
+              <label :for="sortOption" class="capitalize">{{ sortOption }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="order-container">
+          <p class="order-heading">Order by:</p>
+          <div class="order-options">
+            <div v-for="(order, index) in orders" :key="index" class="order-option">
+              <input type="radio" name="order" v-model="orderBy" :value="order.value" :id="order.value" />
+              <label :for="order.value" class="capitalize">{{ order.text }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    
     <component :is="page" :filteredLessons="filteredLessons" :cart="cart" :checkoutForm="checkoutForm"
       @add-item-to-cart="addToCart" @remove-item-from-cart="removeFromCart" :isCheckoutFormValid="isCheckoutFormValid"
       @checkout-order="checkout" :loading="loading" :error="error" :checkedOut="checkedOut"></component>
@@ -139,16 +167,16 @@ export default {
     addToCart(lesson) {
       lesson.spaces -= 1;
       this.cart.push(lesson);
-      
+
     },
     removeFromCart(lesson) {
-      
+
       const cartLength = this.cart.length;
 
-      for (let i = 0; i<cartLength; i++){
+      for (let i = 0; i < cartLength; i++) {
         let cu_lesson = this.cart[i];
-    
-        if(JSON.stringify(cu_lesson) === JSON.stringify(lesson)){
+
+        if (JSON.stringify(cu_lesson) === JSON.stringify(lesson)) {
           lesson.spaces += 1;
           this.cart.splice(i, 1);
           break;
@@ -158,7 +186,7 @@ export default {
 
 
       }
-     
+
     },
     toggleCartDisplay() {
       if (this.page === Lessons && this.cart.length > 0) {
@@ -274,12 +302,6 @@ export default {
       );
     },
   },
-  created: function () {
-    if ("serviceWorker" in navigator) {
-      console.log("service worker is present")
-      navigator.serviceWorker.register("service-worker.js")
-    }
-  },
 
   created() {
     this.getLessons();
@@ -360,6 +382,7 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
 }
+
 .cart-button {
   background-color: transparent;
   border: none;
@@ -370,7 +393,8 @@ body {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  z-index: 999; /* Ensure it's on top of other elements if necessary */
+  z-index: 999;
+  /* Ensure it's on top of other elements if necessary */
 }
 
 .cart-count {
@@ -386,12 +410,15 @@ body {
 .search-container {
   margin-top: 1rem;
   display: flex;
-  justify-content: center; /* Center the search box horizontally */
+  justify-content: center;
+  /* Center the search box horizontally */
 }
 
 #search {
-  width: 60%; /* Adjust the width as needed */
-  max-width: 300px; /* Set a maximum width if necessary */
+  width: 60%;
+  /* Adjust the width as needed */
+  max-width: 300px;
+  /* Set a maximum width if necessary */
   padding: 0.5rem;
   border: 2px solid #ddd;
   border-radius: 0.25rem;
@@ -408,15 +435,18 @@ body {
 .order-container {
   margin-top: 1rem;
   display: flex;
-  flex-direction: column; /* Arrange options in a column */
-  align-items: center; /* Center the filter and order sections horizontally */
+  flex-direction: column;
+  /* Arrange options in a column */
+  align-items: center;
+  /* Center the filter and order sections horizontally */
 }
 
 .filter-heading,
 .order-heading {
   font-size: 1rem;
   font-weight: bold;
-  margin-bottom: 0.5rem; /* Add some space between heading and options */
+  margin-bottom: 0.5rem;
+  /* Add some space between heading and options */
 }
 
 .filter-options,
@@ -424,7 +454,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  justify-content: center; /* Center the options horizontally */
+  justify-content: center;
+  /* Center the options horizontally */
 }
 
 .filter-option,
@@ -466,7 +497,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center; /* Center the lessons horizontally */
+  justify-content: center;
+  /* Center the lessons horizontally */
 }
 
 .lesson-item {
@@ -477,8 +509,10 @@ body {
   padding: 20px;
   margin: 10px 0;
   text-align: center;
-  width: calc(25% - 20px); /* Adjust the width based on your design */
-  flex: 1 0 calc(25% - 1rem); /* Adjust the flex property */
+  width: calc(25% - 20px);
+  /* Adjust the width based on your design */
+  flex: 1 0 calc(25% - 1rem);
+  /* Adjust the flex property */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -495,11 +529,12 @@ body {
 }
 
 .lesson-image {
-  width: 100%; /* Make the image fill the container */
+  width: 100%;
+  /* Make the image fill the container */
   height: auto;
   object-fit: cover;
   border-radius: 0.5rem;
-  transition: transform 0.3s ease-in-out; 
+  transition: transform 0.3s ease-in-out;
 }
 
 /* Add a hover effect to scale the image slightly on hover */
@@ -523,18 +558,23 @@ body {
 }
 
 .lesson-actions button {
-  background-color: #ff9a8a93; /* Pink button color */
-  color: #fff; /* White text color */
+  background-color: #ff9a8a93;
+  /* Pink button color */
+  color: #fff;
+  /* White text color */
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s; /* Add a smooth transition effect */
+  transition: background-color 0.3s, color 0.3s;
+  /* Add a smooth transition effect */
 }
 
 .lesson-actions button:hover {
-  background-color: rgb(64, 47, 255); /* Blue hover color */
-  color: #fff; /* White text color on hover */
+  background-color: rgb(64, 47, 255);
+  /* Blue hover color */
+  color: #fff;
+  /* White text color on hover */
 }
 
 /* Loading and Error Container */
@@ -547,6 +587,7 @@ body {
 .error-frame {
   width: 50%;
 }
+
 /* Lessons Container */
 .lessons-container,
 .empty-lessons-container {
@@ -615,7 +656,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center; /* Center the lessons horizontally */
+  justify-content: center;
+  /* Center the lessons horizontally */
 }
 
 .cart-item {
@@ -632,7 +674,8 @@ body {
   text-align: center;
   position: relative;
   margin-left: 10x;
-  margin-bottom: 20px; /* Adjust the margin-bottom to create space between cart items */
+  margin-bottom: 20px;
+  /* Adjust the margin-bottom to create space between cart items */
 }
 
 .cart-details {
@@ -642,10 +685,12 @@ body {
 
 .cart-image {
   width: 100%;
-  height: auto; /* Adjust the height to be determined by the image */
+  height: auto;
+  /* Adjust the height to be determined by the image */
   object-fit: cover;
   border-radius: 0.3125rem;
-  margin-top: 1rem; /* Adjust the margin-top to create space between image and details */
+  margin-top: 1rem;
+  /* Adjust the margin-top to create space between image and details */
 }
 
 .cart-actions {
@@ -683,13 +728,17 @@ form {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 400px; /* Set a maximum width for the input container */
-  margin-bottom: 1rem; /* Add some space between the input fields */
+  max-width: 400px;
+  /* Set a maximum width for the input container */
+  margin-bottom: 1rem;
+  /* Add some space between the input fields */
 }
 
 #name {
-  flex: 1; /* Make the name input take up available space */
-  margin-right: 0.5rem; /* Add some space between the name and phone inputs */
+  flex: 1;
+  /* Make the name input take up available space */
+  margin-right: 0.5rem;
+  /* Add some space between the name and phone inputs */
   border: 2px solid black;
   border-radius: 0.25rem;
   padding: 0.5rem;
@@ -698,8 +747,10 @@ form {
 }
 
 #phone {
-  flex: 1; /* Make the phone input take up available space */
-  margin-left: 0.5rem; /* Add some space between the name and phone inputs */
+  flex: 1;
+  /* Make the phone input take up available space */
+  margin-left: 0.5rem;
+  /* Add some space between the name and phone inputs */
   border: 2px solid black;
   border-radius: 0.25rem;
   padding: 0.5rem;
@@ -771,14 +822,14 @@ button:hover {
   width: 2rem;
   height: 2rem;
   margin-right: 0.75rem;
-  background-color:  #ff9a8a93;
+  background-color: #ff9a8a93;
   border-radius: 0.375rem;
 }
 
 .check-icon {
   width: 1.25rem;
   height: 1.25rem;
-  fill:  black;
+  fill: black;
 }
 
 .message-container {

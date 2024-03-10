@@ -1,22 +1,6 @@
 var cacheName = "afterschool-v1";
 var cacheFiles = [
-    "index.html",
-    "Images/badminton.png",
-    "Images/dance.png",
-    "Images/drama1.png",
-    "Images/drawing1.jpg",
-    "Images/english1.png",
-    "Images/football.png",
-    "Images/gymnastic.png",
-    "Images/icon-32.png",
-    "Images/icon-512.png",
-    "Images/karate.png",
-    "Images/math1.jpeg",
-    "Images/music.jpg",
-    "Images/science1.png",
-    "Images/social1.gif",
-    "javascript/app.js",
-    "lessons.js"
+    "/index.html",
 ];
 
 self.addEventListener("install", function(e) {
@@ -29,26 +13,35 @@ self.addEventListener("install", function(e) {
     );
 });
 
-self.addEventListener("fetch", function (e){
+self.addEventListener("fetch", function (e) {
     e.respondWith(
         caches.match(e.request).then(function (cachedFile) {
-            // if the file is in cache, retrive it from there
-            if(cachedFile){
+            if (cachedFile) {
                 console.log("[Service Worker] Resource fetched from the cache for: " + e.request.url);
                 return cachedFile;
-            } else //if the file is not in the cache, download the file
-            {
+            } else {
                 return fetch(e.request).then(function (response) {
+                    // Check if the response is cloneable
+                    if (!response || !response.clone) {
+                        console.log("[Service Worker] Cannot clone response for: " + e.request.url);
+                        return response;
+                    }
+
                     return caches.open(cacheName).then(function (cache) {
-                        //add new file to the cache
+                        // Add new file to the cache
                         cache.put(e.request, response.clone());
 
                         console.log("[Service Worker] Resource fetched and saved in the cache for: " +
-                        e.request.url);
+                            e.request.url);
                         return response;
                     });
+                })
+                .catch(function(error) {
+                    console.error("[Service Worker] Fetch error:", error);
+                    throw error;
                 });
             }
         })
     );
 });
+

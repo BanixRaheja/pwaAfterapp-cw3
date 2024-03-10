@@ -36,7 +36,7 @@
             </button>
           </div>
         </nav>
-        <a href="https://webcoursework2.eu-north-1.elasticbeanstalk.com/lessons">Link</a>
+        <a href="https://webcoursework2.eu-north-1.elasticbeanstalk.com/lessons">HTTTPS Test Link</a>
       </header>
 </template>
 
