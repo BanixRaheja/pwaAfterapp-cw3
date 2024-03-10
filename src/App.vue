@@ -3,7 +3,7 @@
     <Header :siteName="siteName" :siteLogo = "siteLogo" :cartLength="cart.length" @change="toggleCartDisplay"></Header>
     <component :is="page" :filteredLessons="filteredLessons" :cart="cart" :checkoutForm="checkoutForm"
       @add-item-to-cart="addToCart" @remove-item-from-cart="removeFromCart" :isCheckoutFormValid="isCheckoutFormValid"
-      @checkout-order="checkout" :loading="loading" :error="error"></component>
+      @checkout-order="checkout" :loading="loading" :error="error" :checkedOut="checkedOut"></component>
   </div>
 </template>
 
@@ -185,8 +185,6 @@ export default {
 
       this.checkedOut = true;
 
-      this.active = Lessons;
-
       this.cart = [];
 
       Object.keys(this.checkoutForm).every(
@@ -194,6 +192,7 @@ export default {
       );
 
       setTimeout(() => {
+        this.page = Lessons;
         this.checkedOut = false;
       }, 3000);
     },
