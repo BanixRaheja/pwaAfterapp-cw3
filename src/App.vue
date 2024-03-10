@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header :siteName="siteName" :siteLogo="siteLogo" :cartLength="cart.length" @change="toggleCartDisplay"></Header>
-    
+
     <main class="mt-4">
       <div v-if="!isCartDisplaying" id="lessons" class="responsive-container">
         <div class="search-container">
@@ -26,9 +26,11 @@
           </div>
         </div>
       </div>
+      
+
+
     </main>
 
-    
     <component :is="page" :filteredLessons="filteredLessons" :cart="cart" :checkoutForm="checkoutForm"
       @add-item-to-cart="addToCart" @remove-item-from-cart="removeFromCart" :isCheckoutFormValid="isCheckoutFormValid"
       @checkout-order="checkout" :loading="loading" :error="error" :checkedOut="checkedOut"></component>

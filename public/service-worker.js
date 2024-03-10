@@ -35,13 +35,8 @@ self.addEventListener("fetch", function (e) {
                             e.request.url);
                         return response;
                     });
-                })
-                .catch(function(error) {
-                    console.error("[Service Worker] Fetch error:", error);
-                    throw error;
                 });
             }
         })
     );
 });
-
