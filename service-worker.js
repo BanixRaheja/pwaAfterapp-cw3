@@ -1,6 +1,5 @@
 var cacheName = "afterschool-v1";
-var cacheFiles = ["index.html",
-    "afterschool.webmanifest"];
+var cacheFiles = ["index.html"];
 
 // self.addEventListener("install", function(e) {
 //     console.log("[Service Worker] Install");
